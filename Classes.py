@@ -355,7 +355,7 @@ class Login:
         f.close()
         return target
 
-    def get_password(welf):
+    def get_password(self):
         f = open(sys.path[0] + "/logins/" + self.patient_id + ".txt", 'r+')
         line_count = 0
         target = ""
