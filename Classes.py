@@ -3,6 +3,23 @@ import random
 import os
 import sys
 
+# Opens the current patients file and returns their First, Middle or Last name (0, 1, 2)
+def get_patient_name(patient, position):
+    f = open(sys.path[0] + "/patients/" + patient.patient_id + ".txt", 'r+')
+    first_line = f.readline()
+    target = first_line.split(" ")
+    f.close()
+    return target[position]
+
+# Reads a set number of lines in a patient file and returns the following line
+def get_patient_info(patient, lines):
+    f = open(sys.path[0] + "/patients/" + patient.patient_id + ".txt", 'r+')
+    for i in range(lines):
+        f.readline()
+    target = f.readline()
+    f.close()
+    return target
+    
 class Patient:
     first_name = 'uninitialized'
     middle_name = 'uninitialized'
@@ -43,65 +60,30 @@ class Patient:
 
         new_patient.close()
 
-
+    
 
     #getters
     def get_first_name(self):
-        f = open(sys.path[0] + "/patients/" + self.patient_id + ".txt", 'r+')
-        first_line = f.readline()
-        target = first_line.split(" ")
-        f.close()
-        return target[0]
+        return get_patient_name(self, 0)
     
     def get_middle_name(self):
-        f = open(sys.path[0] + "/patients/" + self.patient_id + ".txt", 'r+')
-        first_line = f.readline()
-        target = first_line.split(" ")
-        f.close()
-        return target[1]
+        return get_patient_name(self, 1)
 
 
     def get_last_name(self):
-        f = open(sys.path[0] + "/patients/" + self.patient_id + ".txt", 'r+')
-        first_line = f.readline()
-        target = first_line.split(" ")
-        f.close()
-        return target[2]
+        return get_patient_name(self, 2)
 
     def get_dob(self):
-        f = open(sys.path[0] + "/patients/" + self.patient_id + ".txt", 'r+')
-        f.readline()
-        target = f.readline()
-        f.close()
-        return target
+        return get_patient_info(self, 1)
 
     def get_phone(self):
-        f = open(sys.path[0] + "/patients/" + self.patient_id + ".txt", 'r+')
-        f.readline()
-        f.readline()
-        target = f.readline()
-        f.close()
-        return target
+        return get_patient_info(self, 2)
 
     def get_email(self):
-        f = open(sys.path[0] + "/patients/" + self.patient_id + ".txt", 'r+')
-        f.readline()
-        f.readline()
-        f.readline()
-        target = f.readline()
-        f.close()
-        return target
+        return get_patient_info(self, 3)
     
     def get_address(self):   
-        f = open(sys.path[0] + "/patients/" + self.patient_id + ".txt", 'r+')
-        f.readline()
-        f.readline()
-        f.readline()
-        f.readline()
-        target = f.readline()
-        f.close()
-        print(target)
-        return target
+        return get_patient_info(self, 4)
         
     def get_patient_id(self):
         return self.patient_id
