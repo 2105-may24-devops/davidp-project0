@@ -1,0 +1,12 @@
+8:00am:open
+8:40am:open
+9:20am:open
+10:00am:open
+10:40am:open
+11:20am:open
+1:00pm:open
+1:40pm:open
+2:20pm:open
+3:00pm:open
+3:40pm:open
+4:20pm:open

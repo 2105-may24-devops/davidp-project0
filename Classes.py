@@ -17,6 +17,13 @@ def get_line_from_file(self, file_path, line_num):
     f.close()
     return target
 
+def write_to_file(self, file_path, write_string):
+    f = open(file_path, 'r+' )
+    f.seek(0)
+    f.write(write_string)
+    f.truncate()
+    f.close()
+
 class Patient:
     first_name = 'uninitialized'
     middle_name = 'uninitialized'
@@ -222,82 +229,28 @@ class MedicalRecord:
 
     def get_vaccine_history(self):
         f = open(sys.path[0] + "/medical_records/" + self.patient_id + ".txt", 'r+')
-        line_count = 0
-        target = ""
-        lines = f.readlines()
-
-        for line in lines:
-            line_count += 1
-            if line_count == 2:
-                target = line
-                print(target)
-
-        f.close()
-        return target
-
+        return get_line_from_file(self, sys.path[0] + "/medical_records/" + self.patient_id + ".txt",2)
 
     def get_medication_history(self):
         f = open(sys.path[0] + "/medical_records/" + self.patient_id + ".txt", 'r+')
-        line_count = 0
-        target = ""
-        lines = f.readlines()
+        return get_line_from_file(self, sys.path[0] + "/medical_records/" + self.patient_id + ".txt",5)
 
-        for line in lines:
-            line_count += 1
-            if line_count == 5:
-                target = line
-
-        f.close()
-        return target
-    
     def get_ailment_history(self):
         f = open(sys.path[0] + "/medical_records/" + self.patient_id + ".txt", 'r+')
-        line_count = 0
         return get_line_from_file(self, sys.path[0] + "/medical_records/" + self.patient_id + ".txt",8)
 
     def get_family_history(self):
         f = open(sys.path[0] + "/medical_records/" + self.patient_id + ".txt", 'r+')
-        line_count = 0
-        target = ""
-        lines = f.readlines()
-
-        for line in lines:
-            line_count += 1
-            if line_count == 11:
-                target = line
-
-        f.close()
-        return target
+        return get_line_from_file(self, sys.path[0] + "/medical_records/" + self.patient_id + ".txt",11)
 
     def get_allergies(self):
         f = open(sys.path[0] + "/medical_records/" + self.patient_id + ".txt", 'r+')
-        line_count = 0
-        target = ""
-        lines = f.readlines()
-
-        for line in lines:
-            line_count += 1
-            if line_count == 14:
-                target = line
-                print(target)
-
-        f.close()
-        return target
+        return get_line_from_file(self, sys.path[0] + "/medical_records/" + self.patient_id + ".txt",14)
         
 
     def get_surgeries(self):
         f = open(sys.path[0] + "/medical_records/" + self.patient_id + ".txt", 'r+')
-        line_count = 0
-        target = ""
-        lines = f.readlines()
-
-        for line in lines:
-            line_count += 1
-            if line_count == 17:
-                target = line
-
-        f.close()
-        return target
+        return get_line_from_file(self, sys.path[0] + "/medical_records/" + self.patient_id + ".txt",17)
 
     
     def write_medical_record_to_file(self, patient_id):
