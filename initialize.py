@@ -37,7 +37,7 @@ os.chdir(identifier_dir)
 
 #citation: https://stackoverflow.com/questions/2967194/open-in-python-does-not-create-a-file-if-it-doesnt-exist
 
-test_path = './next_open_id.txt'
+test_path = sys.path[0] + '/identifiers/next_open_id.txt'
 if os.path.isfile(test_path):
     pass
 else:

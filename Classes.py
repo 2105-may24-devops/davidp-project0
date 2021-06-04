@@ -449,7 +449,7 @@ class Identifier:
             f.close()
 
 class Appointments:
-    date = datetime.date.now()
+    date = datetime.datetime.now()
     time = "uninitialized"
     patient_id = "uninitialized"
     doctor = "uninitialized"
