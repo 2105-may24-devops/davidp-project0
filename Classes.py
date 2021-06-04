@@ -3,6 +3,20 @@ import random
 import os
 import sys
 
+def get_line_from_file(self, file_path, line_num):
+    f = open(file_path, 'r+')
+
+    line_count = 0
+    target = ""
+    lines = f.readlines()
+
+    for line in lines:
+        line_count += 1
+        if line_count == line_num:
+            target = line
+    f.close()
+    return target
+
 class Patient:
     first_name = 'uninitialized'
     middle_name = 'uninitialized'
@@ -235,22 +249,11 @@ class MedicalRecord:
 
         f.close()
         return target
-
-
     
     def get_ailment_history(self):
         f = open(sys.path[0] + "/medical_records/" + self.patient_id + ".txt", 'r+')
         line_count = 0
-        target = ""
-        lines = f.readlines()
-
-        for line in lines:
-            line_count += 1
-            if line_count == 8:
-                target = line
-
-        f.close()
-        return target
+        return get_line_from_file(self, sys.path[0] + "/medical_records/" + self.patient_id + ".txt",8)
 
     def get_family_history(self):
         f = open(sys.path[0] + "/medical_records/" + self.patient_id + ".txt", 'r+')
