@@ -52,6 +52,8 @@ first.set_first_name("Bob")
 first_med = MedicalRecord(first.get_patient_id(),"covid 19 and the others", "lots of stuff", "a really loooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong history I'm using to test the line length","some stuff here and there on both sides","none","none that I recall")
 first_med.get_vaccine_history()
 
+print(first_med.get_ailment_history())
+
 date = datetime.date.today()
 
 appointments = {"8:00am":"open", "8:40am":"open","9:20am":"open","10:00am":"open","10:40am":"open","11:20am":"open","1:00pm":"open","1:40pm":"open","2:20pm":"open","3:00pm":"open","3:40pm":"open","4:20pm":"open"}
