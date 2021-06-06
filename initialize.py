@@ -377,7 +377,7 @@ def register_new_patient():
         found = 0
 
         for file in os.listdir(path):
-            test_username = get_line_from_file(file,0)
+            test_username = get_line_from_file(file,1)
             if username == test_username:
                 found = 1
         if not found:
