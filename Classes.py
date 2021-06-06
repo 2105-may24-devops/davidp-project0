@@ -17,12 +17,60 @@ def get_line_from_file(self, file_path, line_num):
     f.close()
     return target
 
-def write_to_file(self, file_path, write_string):
+def write_to_file(file_path, write_string):
     f = open(file_path, 'r+' )
     f.seek(0)
     f.write(write_string)
     f.truncate()
     f.close()
+
+def get_first_name(patient_id):
+    f = open(sys.path[0] + "/patients/" + patient_id + ".txt", 'r+')
+    first_line = f.readline()
+    target = first_line.split(" ")
+    f.close()
+    return target[0]    
+
+def get_middle_name(patient_id):
+    f = open(sys.path[0] + "/patients/" + patient_id + ".txt", 'r+')
+    first_line = f.readline()
+    target = first_line.split(" ")
+    f.close()
+    return target[1]
+
+def get_last_name(patient_id):
+    f = open(sys.path[0] + "/patients/" + patient_id + ".txt", 'r+')
+    first_line = f.readline()
+    target = first_line.split(" ")
+    f.close()
+    return target[2]
+
+def get_unique_id():
+    f = open(sys.path[0] + '/identifiers/next_open_id.txt', 'r+')
+    next_unique_id = f.readline()
+    print("reading from file")
+    print(next_unique_id)
+    number = int(next_unique_id)
+    next_number = number + random.randint(0,200)
+    input_number = str(next_number)
+    f.seek(0) #https://stackoverflow.com/questions/11469228/replace-and-overwrite-instead-of-appending/11469328
+    f.write(input_number)
+    f.truncate()
+    f.close()
+    return next_unique_id
+
+def get_dob(patient_id):
+    return get_line_from_file(sys.path[0] + "/patients/" + patient_id + ".txt",2 )
+
+def get_phone(patient_id):
+    return get_line_from_file(sys.path[0] + "/patients/" + patient_id + ".txt",3 )
+
+def get_email(patient_id):
+    return get_line_from_file(sys.path[0] + "/patients/" + patient_id + ".txt",4 )
+
+def get_address(patient_id):   
+    return get_line_from_file(sys.path[0] + "/patients/" + patient_id + ".txt",5 )
+
 
 class Patient:
     first_name = 'uninitialized'
@@ -46,89 +94,19 @@ class Patient:
         self.email = email
         self.address = address        
 
-        with open(sys.path[0] + '/identifiers/next_open_id.txt', 'r+') as f:
-            first_line = f.readline()
-            print("reading from file")
-            print(first_line)
-            number = int(first_line)
-            next_number = number + random.randint(0,200)
-            input_number = str(next_number)
-            self.patient_id = first_line
-            f.seek(0) #https://stackoverflow.com/questions/11469228/replace-and-overwrite-instead-of-appending/11469328
-            f.write(input_number)
-            f.truncate()
-            f.close() 
-
         new_patient = open(sys.path[0] + "/patients/" + self.patient_id + ".txt", 'w')
         self.write_patient_to_file(self.patient_id)
-
         new_patient.close()
 
-
+    def set_patient_id(self, patient_id):
+        self.patient_id = patient_id
 
     #getters
-    def get_first_name(self):
-        f = open(sys.path[0] + "/patients/" + self.patient_id + ".txt", 'r+')
-        first_line = f.readline()
-        target = first_line.split(" ")
-        f.close()
-        return target[0]
     
-    def get_middle_name(self):
-        f = open(sys.path[0] + "/patients/" + self.patient_id + ".txt", 'r+')
-        first_line = f.readline()
-        target = first_line.split(" ")
-        f.close()
-        return target[1]
-
-
-    def get_last_name(self):
-        f = open(sys.path[0] + "/patients/" + self.patient_id + ".txt", 'r+')
-        first_line = f.readline()
-        target = first_line.split(" ")
-        f.close()
-        return target[2]
-
-    def get_dob(self):
-        f = open(sys.path[0] + "/patients/" + self.patient_id + ".txt", 'r+')
-        f.readline()
-        target = f.readline()
-        f.close()
-        return target
-
-    def get_phone(self):
-        f = open(sys.path[0] + "/patients/" + self.patient_id + ".txt", 'r+')
-        f.readline()
-        f.readline()
-        target = f.readline()
-        f.close()
-        return target
-
-    def get_email(self):
-        f = open(sys.path[0] + "/patients/" + self.patient_id + ".txt", 'r+')
-        f.readline()
-        f.readline()
-        f.readline()
-        target = f.readline()
-        f.close()
-        return target
-    
-    def get_address(self):   
-        f = open(sys.path[0] + "/patients/" + self.patient_id + ".txt", 'r+')
-        f.readline()
-        f.readline()
-        f.readline()
-        f.readline()
-        target = f.readline()
-        f.close()
-        print(target)
-        return target
-        
     def get_patient_id(self):
         return self.patient_id
 
     #setters
-
     def set_first_name(self, first_name):
         self.first_name = first_name
         self.write_patient_to_file(self.patient_id)
@@ -137,16 +115,15 @@ class Patient:
         self.middle_name = middle_name
         self.write_patient_to_file(self.patient_id)
 
-    
     def set_last_name(self, last_name):
         self.last_name = last_name
         self.write_patient_to_file(self.patient_id)
 
-
     def set_dob(self, year, month, day):
         self.dob = datetime.date(year, month, day)
-        self.write_patient_to_file(self.patient_id)
-
+        year = self.dob.strftime("%Y") #citation: https://www.programiz.com/python-programming/datetime/strftime
+        month = self.dob.strftime("%m")
+        day = self.dob.strftime("%d")
     def set_phone(self, phone):
         self.phone = phone
         self.write_patient_to_file(self.patient_id)
@@ -159,27 +136,20 @@ class Patient:
         self.address = address
         self.write_patient_to_file(self.patient_id)
 
-
-
-    
     def write_patient_to_file(self, patient_id):
-        #navigate to the patients folder
         date = self.dob
         year = date.strftime("%Y") #citation: https://www.programiz.com/python-programming/datetime/strftime
         month = date.strftime("%m")
         day = date.strftime("%d")
 
-        with open(sys.path[0] + "/patients/" + self.patient_id+".txt", 'r+') as f:
+        path = sys.path[0] + "/patients/" + self.patient_id+".txt"
         #write the patient info to the new file in the proper format
-            write_build = ""
-            write_build += self.first_name + " " + self.middle_name + " " + self.last_name + "\n"
-            write_build += month + "/" + day + "/"+ year + "\n"
-            write_build += self.phone + "\n" + self.email + "\n" + self.address + "\n"
+        write_build = ""
+        write_build += self.first_name + " " + self.middle_name + " " + self.last_name + "\n"
+        write_build += month + "/" + day + "/"+ year + "\n"
+        write_build += self.phone + "\n" + self.email + "\n" + self.address + "\n"
 
-            f.seek(0)
-            f.write(write_build)
-            f.truncate()
-            f.close()
+        write_to_file(path, write_build)
 
 class MedicalRecord:
     patient_id = "uninitialized"
@@ -228,49 +198,36 @@ class MedicalRecord:
         self.write_medical_record_to_file(self.patient_id)
 
     def get_vaccine_history(self):
-        f = open(sys.path[0] + "/medical_records/" + self.patient_id + ".txt", 'r+')
         return get_line_from_file(self, sys.path[0] + "/medical_records/" + self.patient_id + ".txt",2)
 
     def get_medication_history(self):
-        f = open(sys.path[0] + "/medical_records/" + self.patient_id + ".txt", 'r+')
         return get_line_from_file(self, sys.path[0] + "/medical_records/" + self.patient_id + ".txt",5)
 
     def get_ailment_history(self):
-        f = open(sys.path[0] + "/medical_records/" + self.patient_id + ".txt", 'r+')
         return get_line_from_file(self, sys.path[0] + "/medical_records/" + self.patient_id + ".txt",8)
 
     def get_family_history(self):
-        f = open(sys.path[0] + "/medical_records/" + self.patient_id + ".txt", 'r+')
         return get_line_from_file(self, sys.path[0] + "/medical_records/" + self.patient_id + ".txt",11)
 
     def get_allergies(self):
-        f = open(sys.path[0] + "/medical_records/" + self.patient_id + ".txt", 'r+')
         return get_line_from_file(self, sys.path[0] + "/medical_records/" + self.patient_id + ".txt",14)
         
-
     def get_surgeries(self):
-        f = open(sys.path[0] + "/medical_records/" + self.patient_id + ".txt", 'r+')
         return get_line_from_file(self, sys.path[0] + "/medical_records/" + self.patient_id + ".txt",17)
 
-    
     def write_medical_record_to_file(self, patient_id):
-        #navigate to the medical_records folder
+        path = sys.path[0] + "/medical_records/" + self.patient_id+".txt"
 
-        with open(sys.path[0] + "/medical_records/" + self.patient_id+".txt", 'r+') as f:
         #write the patient info to the new file in the proper format
-            write_build = ""
-            write_build += "Vaccine History:\n" + self.vaccine_history + "\n"
-            write_build += "\nMedication History:\n" + self.medication_history + "\n"
-            write_build += "\nAilment History:\n" + self.ailment_history + "\n"
-            write_build += "\nFamily History: \n" + self.family_history + "\n"
-            write_build += "\nAllergies: \n" + self.allergies + "\n"
-            write_build += "\nSurgeries: \n" + self.surgeries + "\n"
+        write_build = ""
+        write_build += "Vaccine History:\n" + self.vaccine_history + "\n"
+        write_build += "\nMedication History:\n" + self.medication_history + "\n"
+        write_build += "\nAilment History:\n" + self.ailment_history + "\n"
+        write_build += "\nFamily History: \n" + self.family_history + "\n"
+        write_build += "\nAllergies: \n" + self.allergies + "\n"
+        write_build += "\nSurgeries: \n" + self.surgeries + "\n"
 
-
-            f.seek(0)
-            f.write(write_build)
-            f.truncate()
-            f.close()
+        write_to_file(path, write_build)
 
 class Login:
     patient_id = "uninitialized"
@@ -298,44 +255,21 @@ class Login:
         return self.patient_id
 
     def get_username(self):
-        f = open(sys.path[0] + "/logins/" + self.patient_id + ".txt", 'r+')
-        line_count = 0
-        target = ""
-        lines = f.readlines()
+        return get_line_from_file(self, sys.path[0] + "/identifiers/" + self.patient_id + ".txt",1)
 
-        for line in lines:
-            line_count += 1
-            if line_count == 1:
-                target = line
-
-        f.close()
-        return target
 
     def get_password(self):
-        f = open(sys.path[0] + "/logins/" + self.patient_id + ".txt", 'r+')
-        line_count = 0
-        target = ""
-        lines = f.readlines()
+        return get_line_from_file(self, sys.path[0] + "/identifiers/" + self.patient_id + ".txt",2)
 
-        for line in lines:
-            line_count += 1
-            if line_count == 2:
-                target = line
-
-        f.close()
-        return target
 
     def write_login_to_file(self, patient_id):
-        with open(sys.path[0] + "/logins/" + self.patient_id+".txt", 'r+') as f:
+        path = sys.path[0] + "/logins/" + self.patient_id+".txt"
         #write the patient info to the new file in the proper format
-            write_build = ""
-            write_build += self.username + "\n"
-            write_build += self.password + "\n"
+        write_build = ""
+        write_build += self.username + "\n"
+        write_build += self.password + "\n"
 
-            f.seek(0)
-            f.write(write_build)
-            f.truncate()
-            f.close()
+        write_to_file(path, write_build)    
 
 class Identifier:
     patient_id = "uninitialized"
@@ -363,59 +297,19 @@ class Identifier:
         return self.patient_id
 
     def get_ssn(self):
-        f = open(sys.path[0] + "/identifiers/" + self.patient_id + ".txt", 'r+')
-        line_count = 0
-        target = ""
-        lines = f.readlines()
-
-        for line in lines:
-            line_count += 1
-            if line_count == 1:
-                target = line
-
-        f.close()
-        return target
+        return get_line_from_file(self, sys.path[0] + "/identifiers/" + self.patient_id + ".txt",1)
 
     def get_other_id(self):
-        f = open(sys.path[0] + "/identifiers/" + self.patient_id + ".txt", 'r+')
-        line_count = 0
-        target = ""
-        lines = f.readlines()
-
-        for line in lines:
-            line_count += 1
-            if line_count == 2:
-                target = line
-
-        f.close()
-        return target
-
-
+        return get_line_from_file(self, sys.path[0] + "/identifiers/" + self.patient_id + ".txt",2)
 
     def write_identifier_to_file(self, patient_id):
-        with open(sys.path[0] + "/identifiers/" + self.patient_id+".txt", 'r+') as f:
+        path = sys.path[0] + "/identifiers/" + self.patient_id+".txt"
         #write the patient info to the new file in the proper format
-            write_build = ""
-            write_build += self.ssn + "\n"
-            write_build += self.other_id + "\n"
+        write_build = ""
+        write_build += self.ssn + "\n"
+        write_build += self.other_id + "\n"
 
-            f.seek(0)
-            f.write(write_build)
-            f.truncate()
-            f.close()
+        write_to_file(path, write_build)
 
-class Appointments:
-    date = datetime.datetime.now()
-    time = "uninitialized"
-    patient_id = "uninitialized"
-    doctor = "uninitialized"
-    reason = "uninitialzied"
-
-    def __init__(self, year, month, day, time, patient_id, doctor, reason):
-        self.date = datetime.date(year, month, day)
-        self.time = time
-        self.patient_id = patient_id
-        self.doctor = doctor
-        self.reason = reason
 
     
