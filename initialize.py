@@ -227,7 +227,7 @@ def make_an_appointment(patient_id):
     exit = 0
     choice = input("please choose from the following items:\n(1) view open appointments on given day\n(2) "
     +"view all open appointments\n3(3) make an appointment\n(4)return to patient menu\n")
-    while choice != "1" and choice != "2" and choice != "3":
+    while choice != "1" and choice != "2" and choice != "3" and choice != "4":
         choice = input("please select a menu option\n")
     if choice == "1":
         date = input("please select a date in the following format: YYYY-MM-DD\n")
