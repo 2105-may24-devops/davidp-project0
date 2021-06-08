@@ -6,9 +6,9 @@ from pathlib import Path
 from genericpath import isfile
 
 from Classes import (Identifier, Login, MedicalRecord, Patient, get_address,
-                     get_dob, get_email, get_first_name, get_last_name,
-                     get_line_from_file, get_middle_name, get_phone,
-                     get_unique_id, write_to_file)
+get_dob, get_email, get_first_name, get_last_name,
+get_line_from_file, get_middle_name, get_phone,
+get_unique_id, write_to_file,get_password,get_username,get_ailment_history,get_allergies,get_family_history,get_medication_history,get_surgeries,get_vaccine_history,get_other_id,get_ssn)
 
 #citation: https://djangocentral.com/check-if-a-directory-exists-if-not-create-it/p
 logins_dir = "logins"
@@ -55,8 +55,6 @@ else:
     file.write(admin_login_write_string)
     file.close()
 
-#os.chdir(identifier_dir)
-
 #citation: https://stackoverflow.com/questions/2967194/open-in-python-does-not-create-a-file-if-it-doesnt-exist
 
 test_path = sys.path[0] + '/identifiers/next_open_id.txt'
@@ -77,24 +75,28 @@ for i in range(180):
     
     filename = str(date)
     weekday_check = date.weekday()
+    file_path = sys.path[0] + "/appointments/" + filename + ".txt"
+    
     if(weekday_check < 5): #citation: https://stackoverflow.com/questions/29384696/how-to-find-current-day-is-weekday-or-weekends-in-python
-        f = open(sys.path[0] + "/appointments/" + filename + ".txt", 'w')
-        for key, value in appointments.items(): 
-            f.write('%s-%s\n' % (key, value))
-        f.close()
+        if not os.path.isfile(file_path):
+            f = open(sys.path[0] + "/appointments/" + filename + ".txt", 'w')
+            for key, value in appointments.items(): 
+                f.write('%s-%s\n' % (key, value))
+            f.close()
 
 def patient_menu(patient_id):
     dob_date_to_parse = get_dob(patient_id).split("/")
-    dob_year = dob_date_to_parse[0]
-    dob_month = dob_date_to_parse[1]
-    dob_day = dob_date_to_parse[2]    
+    dob_year = int(dob_date_to_parse[2])
+    dob_month = int(dob_date_to_parse[0])
+    dob_day = int(dob_date_to_parse[1])    
     this_patient = Patient(get_first_name(patient_id),get_middle_name(patient_id),get_last_name(patient_id),dob_year,dob_month,dob_day,get_phone(patient_id),get_email(patient_id),get_address(patient_id))
     
     this_patient.set_patient_id(patient_id)
 
     exit = 0
     while exit != 5:
-        choice = input("select from the following options: \n(1) make an appointment \n(2) view medical record \n(3) view your upcoming appointments \n(4) cancel an appointment \n(5) exit")
+        choice = input("select from the following options: \n(1) make an appointment \n(2) view medical record \n(3)"
+        +" view your upcoming appointments \n(4) cancel an appointment \n(5) exit\n")
 
         if choice == "1":
             make_an_appointment(patient_id)
@@ -110,241 +112,308 @@ def patient_menu(patient_id):
             print("please choose from the menu")
 
 def patient_login():
-    try_count = 0
-    found = 0
+    username_found = False
+    password_found = False
 
-    username = input("please enter your username")
-    #find that username
-    path = sys.path[0]+"/logins"
+    file_path = sys.path[0] + "/logins/"
 
-    test_username = ""
-    found_patient_id = "not found"
-    login_success = 0
-    returned_patient_id = "unsuccessful login"
+    quit = False
 
-    try_username = "1"
-    while try_username == "1":
-
-        for file in os.listdir(path):
-            test_username = get_line_from_file(file,0)
-            if test_username == username:
-                while try_count < 4:
-                    try_count += 1
-                    found = 1
-                    password = input("please enter your password\n")
-                    test_password = get_line_from_file(file, 1)
-                    if test_password == password:
-                        found_patient_id = file
-                        login_success = 1
-                        break
-                    else:
-                        password = input("incorrect password, please re-enter\n")
-                if try_count > 3:
-                    print("account temporarily locked due to multiple incorrect login attempts, please contact our office\n")
-                break
-        if not found:
-            selection = ""
-            while selection != "1" and selection != "2":
-                selection = input("username not found\n(1) try entering again\n(2) exit")
-                try_username = selection
-        
-        if login_success:
-            patient_menu(found_patient_id)
+    while not username_found and not quit:
+        entered_username = input("please enter your USERNAME or type 'q' to quit\n")
+        for file in os.listdir(file_path):
+            test_username = get_line_from_file(file_path+file,1)
+            test_username = test_username.strip()
+            if test_username == entered_username:
+                username_found = True
+            elif entered_username == "q":
+                quit = True
+                menu()
+        if not username_found:
+            print("username not found, please try again") 
             
-def admin_menu():
+    while username_found and not password_found and not quit:
+        entered_password = input("please enter your PASSWORD or type 'q' to quit\n")
+        for file in os.listdir(file_path):
+            test_password = get_line_from_file(file_path+file,2)
+            test_password = test_password.strip()
+            if test_password == entered_password:
+                password_found = True
+            elif entered_password == "q":
+                quit = True
+                menu()
+        if not password_found:
+            print("password not found, please try again") 
+
+    if password_found and username_found:
+        patient_id = file[:-4]
+        patient_menu(patient_id)
+
+def view_all_appointments():
+    file_path = sys.path[0] + "/patients"
+    for file in os.listdir(file_path):
+        view_upcoming_appointments(file)
+    admin_menu()
+
+def cancel_an_appointment(patient_id, mode):
+    found = 0
+    appointment_date = ""
+    while not found and appointment_date != "q":
+        appointment_date = input("select a date for which to cancel (YYYY-MM-DD)\n")
+        file_path = os.path[0] + "/appointments/" + appointment_date + ".txt"
+        if os.path.isfile(file_path):
+            found = True
+        else:
+            appointment_date = input("appointment not found for that date, please try again, make sure date format is (YYYY-MM-DD) or type 'q' to return to menu\n")
+            if appointment_date == "q":
+                if mode == "patient":
+                    patient_menu()
+                else:
+                    admin_menu()
+
+def admin_cancel_an_appointment():
     pass
+
+def admin_view_medical_record():
+    pass
+
+def lookup_patient_id(gov_id):
+    file_path = sys.path[0] + "/identifiers/" + 
+
+
+
+def admin_menu():
+    choice = ""
+    while choice != "1" and choice != "2" and choice != "3" and choice != "4" and choice != "5" and choice != "6":
+        choice = input("Now logged in as admin. Please choose from the following options:\n(1) view all appointments\n(2)"
+        +"cancel an appointment\n(3) view a medical record\n(4)lookup patient_id by Name and identifier\n(5)delete a patient\n(6) logout )\n")
+        if choice != "1" and choice != "2" and choice != "3" and choice != "4" and choice != "5" and choice != "6":
+            print("please choose from the menu options")
+    if choice == "1":
+        view_all_appointments()
+    elif choice == "2":
+        admin_cancel_an_appointment()
+    elif choice == "3":
+        admin_view_medical_record()
+    elif choice == "4":
+        lookup_patient_id()
+    elif choice == "5": 
+        delete_patient()
+
+    #cancel appointments
+    #view medical records
+    #lookup someone's patient number with appropriate identifiers
+    #delete a patient
+
     
 def view_open_appointments():
-    path = sys.path[0] + "/appointments/"
-    open_appointment_list = {}
+    file_path = sys.path[0] + "/appointments/"
 
-    for file in os.listdir(path):
-        f = open(path + file, 'r+')
+    for file in os.listdir(file_path):
+        date = file[:-4]
+        print(date)
+        f = open(file_path + file,'r+')
         lines = f.readlines()
         for line in lines:
             line_split = line.split("-")
             time = line_split[0]
             status = line_split[1]
-            trunc = str(file)
-            trunc = trunc[:-4]
             if status.strip() == "open":
-                open_appointment_list[trunc] = time
+                print(time)
         f.close()
-    for x in open_appointment_list:
-        print(x, open_appointment_list[x])
-
+      
 
 def make_an_appointment(patient_id):
     exit = 0
-    choice = input("please choose from the following items:\n(1) view open appointments on given day\n(2) view all open appointments\n(3)return to patient menu")
+    choice = input("please choose from the following items:\n(1) view open appointments on given day\n(2) "
+    +"view all open appointments\n3(3) make an appointment\n(4)return to patient menu\n")
     while choice != "1" and choice != "2" and choice != "3":
-        choice = input("please select a menu option")
+        choice = input("please select a menu option\n")
     if choice == "1":
-        date = input("please select a date in the following format: YYYY-MM-DD")
-        path = sys.path[0]+"/appointments/"+date
-        while not isfile(path):
-            date = input("date is either not in range (weekdays in next 6 months) or is not in YYYY-MM-DD format, please try again")
-        selected_day_appointments = {}
+        date = input("please select a date in the following format: YYYY-MM-DD\n")
+        file_path = sys.path[0]+"/appointments/"+date+".txt"
+        while not isfile(file_path):
+            date = input("date is either not in range (weekdays in next 6 months) or is not in YYYY-MM-DD format, please try again\n")
+            file_path = sys.path[0]+"/appointments/"+date+".txt"
+        selected_day_appointments = []
 
-        f = open(path, 'r+')
+        f = open(file_path,'r+')
         lines = f.readlines()
         for line in lines:
             line_split = line.split("-")
             time = line_split[0]
             status = line_split[1]
-            trunc = str(file)
-            trunc = trunc[:-4]
             if status.strip() == "open":
-                selected_day_appointments[trunc] = time
+                selected_day_appointments.append(time)
         f.close()
         print("open appointments for " + date)
         for x in selected_day_appointments:
-            print(x, selected_day_appointments[x])
+            print(x)
     elif choice == "2":
         view_open_appointments()
-    else:
-        patient_menu(patient_id)
-        
-    print("here are the open appointment slots")
-    view_open_appointments()
+    elif choice == "3":
+        date = input("please select a date in the following format: YYYY-MM-DD\n")
+        file_path = sys.path[0]+"/appointments/"+date+".txt"
+        while not isfile(file_path):
+            date = input("date is either not in range (weekdays in next 6 months) or is not in YYYY-MM-DD format, please try again\n")
 
-def view_medical_record(patient_id):
-    pass
-
-def view_upcoming_appointments(patient_id):
-    path = sys.path[0]+"/appointments/"
-
-    appointment_list = {}
-
-    for file in os.listdir(path):
-        f = open(path + file, 'r+')
+        f = open(file_path, 'r+')
+        selected_days_current_appointments = {}
         lines = f.readlines()
-
-        selected_day_appointments = {}
-
         for line in lines:
-            line_split = line.split(":")
+            line_split = line.split("-")
             time = line_split[0]
             status = line_split[1]
+            status = status.strip()
+            selected_days_current_appointments[time] = status
+        time_found = False
+        quit = False
+        time = "---"
+        while not time_found and not quit:
+            while not time in selected_days_current_appointments:
+                time = input("please select an open time in the example format 9:00am or type 'q' to quit\n")
+                time_found = True
+            if time == "q":
+                quit = True
+                patient_menu(patient_id)
+            status = selected_days_current_appointments[time]
+            if status.strip() == "open":
+                selected_days_current_appointments[time] = patient_id
+        f.close()
+        f = open(file_path, 'w')
+        for key, value in selected_days_current_appointments.items():
+            f.write('%s-%s\n' % (key, value))
+        f.close()
+        print("appointment made for " +date+ " at " + time + "cancelled")
+        patient_menu(patient_id)
+    else:
+        patient_menu(patient_id)
 
-            if status == patient_id:
-                appointment_list[file] = time         
-    print(appointment_list)
+def view_medical_record(patient_id):
+    file_path = sys.path[0] + "/medical_records/"
+    for file in os.listdir(file_path):
+        f = open(file_path + patient_id + ".txt", 'r+')
+        lines = f.readlines()
+        for line in lines:
+            print(line)
+
+def view_upcoming_appointments(patient_id):
+    upcoming_appointments = {}
+    file_path = sys.path[0] + "/appointments/"
+
+    for file in os.listdir(file_path):
+        f = open(file_path + file, 'r+')
+        lines = f.readlines()
+        for line in lines:
+            split_line = line.split("-")
+            time = split_line[0]
+            status = split_line[1].strip()
+            if patient_id == status:
+                upcoming_appointments[file[:-4]] = time
+
+    for x in upcoming_appointments:
+        print(x, upcoming_appointments[x])
 
 def cancel_an_appointmnet(patient_id):
-    print("here are your upcoming appointments: ")
-    
-    view_upcoming_appointments(patient_id)
+    date = input("please select a date in the following format: YYYY-MM-DD\n")
+    file_path = sys.path[0]+"/appointments/"+date+".txt"
+    while not isfile(file_path):
+        date = input("date is either not in range (weekdays in next 6 months) or is not in YYYY-MM-DD format, please try again\n")
 
-    date_input = input("please type the date of your upcoming apointment in the format DD-MM-YYYY or press 1 to go back to patient menu")
-
-    test_path = sys.path[0]+"/appointments/"+ date_input
-
-    while not isfile(test_path) and date_input != "1":
-        print("appointment not found or date entered incorrectly. Please try again or press 1 to go back to patient menu")
-        date_input = input("please type the date of your upcoming apointment in the format YYYY-MM-DD or press 1 to go back to patient menu")
-
-        if date_input == "1":
-            patient_menu(patient_id)
-
-    selected_day_appointments = {}
-
-    f = open(test_path,'r+')
+    f = open(file_path, 'r+')
+    selected_days_current_appointments = {}
     lines = f.readlines()
-
     for line in lines:
-        line_split = line.split(":")
+        line_split = line.split("-")
         time = line_split[0]
         status = line_split[1]
-
-        selected_day_appointments[time] = status
-
-        cancelled = [k for k, v in selected_day_appointments.items() if v == patient_id] #citation: https://note.nkmk.me/en/python-dict-get-key-from-value/
-
-        cancelled_time = cancelled[0]
-        selected_day_appointments[cancelled_time] = "open"
-
+        status = status.strip()
+        selected_days_current_appointments[time] = status
+    time_found = False
+    quit = False
+    time = "---"
+    while not time_found and not quit:
+        while not time in selected_days_current_appointments:
+            time = input("please select an open time in the example format 9:00am or type 'q' to quit\n")
+            time_found = True
+        if time == "q":
+            quit = True
+            patient_menu(patient_id)
+        status = selected_days_current_appointments[time]
+        if status.strip() == patient_id:
+            selected_days_current_appointments[time] = "open"
     f.close()
-
-    f = open(test_path,'r+')
-
-    for key, value in selected_day_appointments.items(): 
+    f = open(file_path, 'w')
+    for key, value in selected_days_current_appointments.items():
         f.write('%s-%s\n' % (key, value))
     f.close()
-    print("appointment on " + date_input + " cancelled")
+    print("appointment on " +date+ " at " + time + "cancelled")
     patient_menu(patient_id)
 
-
 def admin_login():
-    tries = 0
-    username_success = 0
-    password_success = 0
-    exit = "0"
-    while username_success == 0 and exit == "0":
-        test_admin_username = input("enter your username or press 1 to exit")
-        admin_username = get_line_from_file(sys.path[0] + "/admin_logins/admin_login.txt", 1)
-        if test_admin_username == "1":
-            exit = test_admin_username
-        elif test_admin_username == admin_username:
-            username_success == 1
-        else:
-            print("admin username not found, please try again")
-    
-    if username_success:
-        while tries < 4 and exit == "0":
-            tries += 1
-            test_admin_password = input("enter your password or press 1 to exit")
-            admin_password = get_line_from_file(sys.paht[0] + "/admin_lgins/admin_login.txt", 2)
-            if test_admin_password == "1":
-                exit = test_admin_password
-            elif test_admin_password == admin_password:
-                password_success = 1
-            else:
-                if(tries == 3):
-                    print("account locked due to multiple unsuccessful attempts, please contact the office")
-                else:
-                    print("incorrect password, please try again")
+    username_success = False
+    password_success = False
 
-        if username_success and password_success:
-            admin_menu()
+    file_path = sys.path[0]+"/admin_logins/admin_login.txt"
+
+    while not username_success or not password_success:
+        username_input = input("please enter your admin username\n")
+        password_input = input("please enter your admin password\n")
+
+        if username_input == get_line_from_file(file_path,1).strip():
+            username_success = True
+        if password_input == get_line_from_file(file_path, 2).strip():
+            password_success = True
+        
+        if not username_success or not password_success:
+            choice = input("incorrect login \n(1) try again\n(2) return to main menu\n")
+            if choice == "2":
+                menu()
+    admin_menu()
 
 def register_new_patient():
     patient_id = get_unique_id()
     print("Welcome to Central Medical Clinic. You will be prompted to provide some information in order to set up your profile\n"+
     "Pressing enter will move to move to the next item.")
-    first_name = input("first name: ")
-    middle_name = input("middle name: ")
-    last_name = input("last name: ")
+    first_name = input("first name: \n")
+    middle_name = input("middle name: \n")
+    last_name = input("last name: \n")
     correct_format = False
     birth_date = ""
     dob_year = ""
     dob_month = ""
     dob_day = ""
     while not correct_format:
-        birth_date = input("date of birth: (format YYYY-MM-DD) ")
+        birth_date = input("date of birth: (format YYYY-MM-DD) \n")
         test = birth_date.split("-")
         count = 0
-        for i in birth_date:
+        for i in test:
             count+=1
+
         if count == 3:
-            correct_format = True #at least they used the dashes
             dob_year = test[0]
             dob_month = test[1]
             dob_day = test[2]
+        if count == 3 and len(birth_date) == 10 and dob_year.isnumeric() and dob_month.isnumeric() and dob_day.isnumeric():
+            dob_year = int(dob_year)
+            dob_month = int(dob_month)
+            dob_day = int(dob_day)
+            if dob_month > 0 and dob_month < 13 and dob_day > 0 and dob_day < 32:
+                correct_format = True #at least they used the dashes
         else:
             print("Please use format YYYY-MM-DD for date of birth")
-    phone = input("phone: ")
-    email = input("email: ")
-    address = input("address: ")
+    phone = input("phone: \n")
+    email = input("email: \n")
+    address = input("address: \n")
 
     new_patient = Patient(first_name,middle_name,last_name,dob_year,dob_month,dob_day,phone,email,address)
 
-    vaccine_history = input("please indicate vaccine histroy or write \"not sure\"")
-    medication_history = input("please list current medications")
-    ailment_history = input("please list any significant health issues you have experienced")
-    family_history = input("please describe pertinent hereditory family medical history")
-    allergies = input("please list all known allergies")
-    surgeries = input("please describe any surgeries you have undergone")
+    vaccine_history = input("please indicate vaccine histroy or write \"not sure\"\n")
+    medication_history = input("please list current medications\n")
+    ailment_history = input("please list any significant health issues you have experienced\n")
+    family_history = input("please describe pertinent hereditory family medical history\n")
+    allergies = input("please list all known allergies\n")
+    surgeries = input("please describe any surgeries you have undergone\n")
 
     new_medical_record = MedicalRecord(patient_id,vaccine_history,medication_history,ailment_history,family_history,allergies,surgeries)
 
@@ -353,53 +422,104 @@ def register_new_patient():
     other_id = ""
     
     while not correct_input:
-        choice = input("do you have a social security number? (y/n)").lower()
+        choice = input("do you have a social security number? (y/n)\n").lower()
+        if choice == "y" or choice == "n":
+            correct_input = True
     
     if choice == "y":
-        ssn = input("please enter your social security number")
+        ssn = input("please enter your social security number\n")
         other_id = "N/A"
     else:
         ssn = "N/A"
-        other_id = input("In a single line, please enter another type of governemt ID and state the ID-type")
+        other_id = input("In a single line, please enter another type of governemt ID and state the ID-type\n")
     
     new_identifier = Identifier(patient_id,ssn,other_id)
 
     print("your patient ID is " + patient_id)
 
+    new_patient.set_patient_id(patient_id)
+    new_patient.write_patient_to_file(patient_id)
+
     username_valid = False
     username = ""
     
-    path = sys.path[0] + "/logins"
+    path = sys.path[0] + "/logins/"
 
     while not username_valid:
-        username = input("Please select a username")
+        username = input("Please select a username\n")
 
         found = 0
 
         for file in os.listdir(path):
-            test_username = get_line_from_file(file,1)
-            if username == test_username:
+            test_username = get_line_from_file(path+file,1)
+            if username == test_username.strip():
                 found = 1
         if not found:
             username_valid = True
         else:
-            print("username already exists")
+            print("username already exists\n")
     
     password_valid = False
 
     while not password_valid:
-        password = input("please select a password at least 8 characters long")
+        password = input("please select a password at least 8 characters long\n")
         if len(password) >= 8:
             password_valid = True
     
     new_login = Login(patient_id,username,password)
+
+    menu()
+
+def delete_patient_info(patient_id):
+    file_path = sys.path[0]+"/patients/"+ patient_id + ".txt"
+
+    if os.path.exists(file_path):
+        os.remove(file_path)
+
+def delete_medical_records(patient_id):
+    file_path = sys.path[0]+"/medical_records/"+ patient_id + ".txt"
+
+    if os.path.exists(file_path):
+        os.remove(file_path)
+
+
+def delete_identifier(patient_id):
+    file_path = sys.path[0]+"/identifiers/"+ patient_id + ".txt"
+
+    if os.path.exists(file_path):
+        os.remove(file_path)
+
+
+def delete_login(patient_id):
+    file_path = sys.path[0]+"/logins/"+ patient_id + ".txt"
+
+    if os.path.exists(file_path):
+        os.remove(file_path)
+
+def delete_patient():
+    found = 0
+    test_path = sys.path[0] + "/patients/"
+    patient_id = ""
+    while not found and patient_id != "q":
+        patient_id = input("please enter a patient ID")
+        if os.path.isfile(test_path + patient_id + ".txt"):
+            found = 1
+        else:
+            patient_id = input("patient not found, please try again or type 'q' to go back to admin menu")
+            if patient_id == "q":
+                admin_menu()
+    delete_patient_info(patient_id)
+    delete_medical_records(patient_id)
+    delete_identifier(patient_id)
+    delete_login(patient_id)
+    admin_menu()
         
 def menu():
     print("Welcome to Central Medical Clinic\n")
     patient_id = ""
     login_choice = " "
     while login_choice != "p" and login_choice != "a" and login_choice != "r" and login_choice != "e":
-        login_choice = input("Please choose from the following options:\n (P) patient login\n(A) admin login\n(R) register as a new patient\n(E) exit")
+        login_choice = input("Please choose from the following options:\n (P) patient login\n(A) admin login\n(R) register as a new patient\n(E) exit\n")
         login_choice = login_choice.lower()
 
     if login_choice == "p":
@@ -410,12 +530,8 @@ def menu():
         patient_id = register_new_patient()
     else:
         return
-
-view_open_appointments()
-
-    
-
-  
+patient_menu("1111113668")
+menu()
 
 
 
