@@ -1,7 +1,7 @@
 import datetime
 import os
 import sys
-from pathlib import Path
+#from pathlib import Path
 
 from genericpath import isfile
 
@@ -107,7 +107,7 @@ def patient_menu(patient_id):
         elif choice == "4":
             cancel_an_appointmnet(patient_id)
         elif choice == "5":
-            exit = 5
+            menu()
         else:
             print("please choose from the menu")
 
@@ -530,7 +530,7 @@ def menu():
         patient_id = register_new_patient()
     else:
         return
-patient_menu("1111113668")
+#patient_menu("1111113668")
 menu()
 
 
