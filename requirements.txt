@@ -1,1 +1,1 @@
-python-dateutil==3.9.5
+python-dateutil==3.9
