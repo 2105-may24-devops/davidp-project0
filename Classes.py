@@ -3,7 +3,7 @@ import random
 import os
 import sys
 
-def get_line_from_file(self, file_path, line_num):
+def get_line_from_file(file_path, line_num):
     f = open(file_path, 'r+')
 
     line_count = 0
@@ -18,7 +18,7 @@ def get_line_from_file(self, file_path, line_num):
     return target
 
 def write_to_file(file_path, write_string):
-    f = open(file_path, 'r+' )
+    f = open(file_path, 'w+' )
     f.seek(0)
     f.write(write_string)
     f.truncate()
@@ -71,6 +71,35 @@ def get_email(patient_id):
 def get_address(patient_id):   
     return get_line_from_file(sys.path[0] + "/patients/" + patient_id + ".txt",5 )
 
+def get_username(patient_id):
+    return get_line_from_file(sys.path[0] + "/identifiers/" + patient_id + ".txt",1)
+
+def get_password(patient_id):
+    return get_line_from_file(sys.path[0] + "/identifiers/" + patient_id + ".txt",2)
+
+def get_vaccine_history(patient_id):
+    return get_line_from_file(sys.path[0] + "/medical_records/" + patient_id + ".txt",2)
+
+def get_medication_history(patient_id):
+    return get_line_from_file(sys.path[0] + "/medical_records/" + patient_id + ".txt",5)
+
+def get_ailment_history(patient_id):
+    return get_line_from_file(sys.path[0] + "/medical_records/" + patient_id + ".txt",8)
+
+def get_family_history(patient_id):
+    return get_line_from_file(sys.path[0] + "/medical_records/" + patient_id + ".txt",11)
+
+def get_allergies(patient_id):
+    return get_line_from_file(sys.path[0] + "/medical_records/" + patient_id + ".txt",14)
+        
+def get_surgeries(patient_id):
+    return get_line_from_file(sys.path[0] + "/medical_records/" + patient_id + ".txt",17)
+
+def get_ssn(patient_id):
+    return get_line_from_file(sys.path[0] + "/identifiers/" + patient_id + ".txt",1)
+
+def get_other_id(patient_id):
+    return get_line_from_file(sys.path[0] + "/identifiers/" + patient_id + ".txt",2)
 
 class Patient:
     first_name = 'uninitialized'
@@ -197,24 +226,6 @@ class MedicalRecord:
         self.surgeries = surgeries
         self.write_medical_record_to_file(self.patient_id)
 
-    def get_vaccine_history(self):
-        return get_line_from_file(self, sys.path[0] + "/medical_records/" + self.patient_id + ".txt",2)
-
-    def get_medication_history(self):
-        return get_line_from_file(self, sys.path[0] + "/medical_records/" + self.patient_id + ".txt",5)
-
-    def get_ailment_history(self):
-        return get_line_from_file(self, sys.path[0] + "/medical_records/" + self.patient_id + ".txt",8)
-
-    def get_family_history(self):
-        return get_line_from_file(self, sys.path[0] + "/medical_records/" + self.patient_id + ".txt",11)
-
-    def get_allergies(self):
-        return get_line_from_file(self, sys.path[0] + "/medical_records/" + self.patient_id + ".txt",14)
-        
-    def get_surgeries(self):
-        return get_line_from_file(self, sys.path[0] + "/medical_records/" + self.patient_id + ".txt",17)
-
     def write_medical_record_to_file(self, patient_id):
         path = sys.path[0] + "/medical_records/" + self.patient_id+".txt"
 
@@ -240,7 +251,7 @@ class Login:
         self.password = password
 
         new_login = open(sys.path[0] + "/logins/" + self.patient_id + ".txt", 'w')
-        self.write_patient_to_file(self.patient_id)
+        self.write_login_to_file(self.patient_id)
         new_login.close()
     
     def set_username(self, username):
@@ -253,14 +264,6 @@ class Login:
 
     def get_patient_id(self):
         return self.patient_id
-
-    def get_username(self):
-        return get_line_from_file(self, sys.path[0] + "/identifiers/" + self.patient_id + ".txt",1)
-
-
-    def get_password(self):
-        return get_line_from_file(self, sys.path[0] + "/identifiers/" + self.patient_id + ".txt",2)
-
 
     def write_login_to_file(self, patient_id):
         path = sys.path[0] + "/logins/" + self.patient_id+".txt"
@@ -282,7 +285,7 @@ class Identifier:
         self.other_id = other_id
 
         new_identifier = open(sys.path[0] + "/identifiers/" + self.patient_id + ".txt", 'w')
-        self.write_login_to_file(self.patient_id)
+        self.write_identifier_to_file(self.patient_id)
         new_identifier.close()
 
     def set_ssn(self, ssn):
@@ -295,12 +298,6 @@ class Identifier:
 
     def get_patient_id(self):
         return self.patient_id
-
-    def get_ssn(self):
-        return get_line_from_file(self, sys.path[0] + "/identifiers/" + self.patient_id + ".txt",1)
-
-    def get_other_id(self):
-        return get_line_from_file(self, sys.path[0] + "/identifiers/" + self.patient_id + ".txt",2)
 
     def write_identifier_to_file(self, patient_id):
         path = sys.path[0] + "/identifiers/" + self.patient_id+".txt"
