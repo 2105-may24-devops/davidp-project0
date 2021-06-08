@@ -178,7 +178,7 @@ def admin_view_medical_record():
     pass
 
 def lookup_patient_id(gov_id):
-    file_path = sys.path[0] + "/identifiers/" + 
+    pass#file_path = sys.path[0] + "/identifiers/" + 
 
 
 
