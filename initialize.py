@@ -221,14 +221,8 @@ def view_open_appointments():
             if status.strip() == "open":
                 print(time)
         f.close()
-      
 
-def make_an_appointment(patient_id):
-    exit = 0
-    choice = input("please choose from the following items:\n(1) view open appointments on given day\n(2) "
-    +"view all open appointments\n3(3) make an appointment\n(4)return to patient menu\n")
-    while choice != "1" and choice != "2" and choice != "3" and choice != "4":
-        choice = input("please select a menu option\n")
+def make_an_appointment_menu(patient_id, choice):
     if choice == "1":
         date = input("please select a date in the following format: YYYY-MM-DD\n")
         file_path = sys.path[0]+"/appointments/"+date+".txt"
@@ -285,9 +279,15 @@ def make_an_appointment(patient_id):
             f.write('%s-%s\n' % (key, value))
         f.close()
         print("appointment made for " +date+ " at " + time + "cancelled")
-        patient_menu(patient_id)
-    else:
-        patient_menu(patient_id)
+    
+def make_an_appointment(patient_id):
+    exit = 0
+    choice = ""
+    
+    while choice != "4":
+        choice = input("please choose from the following items:\n(1) view open appointments on given day\n(2) "
+        +"view all open appointments\n3(3) make an appointment\n(4)return to patient menu\n")
+        make_an_appointment_menu(patient_id, choice)
 
 def view_medical_record(patient_id):
     file_path = sys.path[0] + "/medical_records/"
