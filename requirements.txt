@@ -1,6 +1,6 @@
-ansicon==1.89.0
-blessed==1.18.0
-jinxed==1.1.0
-jsonpickle==2.0.0
-six==1.16.0
-wcwidth==0.2.5
+ansicon>=1.89.0, <= 2
+blessed>=1.18.0, <= 2
+jinxed==1.1.0, <= 2
+jsonpickle==2.0.0, <= 3
+six==1.16.0, <=2 
+wcwidth==0.2.5, <= 1
