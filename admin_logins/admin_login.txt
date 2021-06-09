@@ -1,2 +1,0 @@
-current_admin_username
-current_admin_password
