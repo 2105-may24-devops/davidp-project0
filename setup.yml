@@ -11,7 +11,7 @@
       git:
         repo: https://github.com/2105-may24-devops/davidp-project0.git
         dest: /home/davidp/davidp-project0
-        version: master
+        version: main
     - name: is pip installed
       package: python3-pip
       state: latest
