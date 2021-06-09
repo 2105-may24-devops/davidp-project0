@@ -1,2 +1,0 @@
-test_user_2
-test_user_2_password
