@@ -1,0 +1,7 @@
+---
+  - hosts: all
+    tasks:
+      - name: uninstall the project
+        file:
+          path: davidp-project0
+          state: absent
