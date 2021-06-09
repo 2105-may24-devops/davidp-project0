@@ -1,22 +1,78 @@
 r
-iirst
-middle
-last
-1111-11-11
-phone number
-email
-address
-
-vaccine history
-medication history
-ailment history
-family history
-allergies
-surgeries
+test
+patient
+one
+1234-12-30
+999-333-2222
+test_patient_one@email.com
+230 Sycamore Ln, Beaverton, IL, 92949
+TP1 list of vaccines
+TP1 list of medications
+TP1 lsit of health issues
+TP1 stated family history
+TP1 stated allergies
+TP1 stated surgeries
 y
-ssn
-unique_username
-valid_password
+999-33-4444
+test_user_1
+test_user_1_password
+
+r
+test
+patient
+two
+1234-12-31
+999-333-9999
+test_patient_two@email.com
+238 Sycamore Ln, Beaverton, IL, 92949
+TP2 list of vaccines
+TP2 list of medications
+TP2 lsit of health issues
+TP2 stated family history
+TP2 stated allergies
+TP2 stated surgeries
+n
+999-33-4444233333
+test_user_2
+test_user_2_password
+e
+
+r
+test
+patient
+three
+104-248-3928
+20 Fortress Pl, Scourdarben, MI
+TP3 lists their vaccines
+TP3 lists their medications
+TP3 lsits their health issues
+TP3 lists their family history
+TP3 lsits their allergies
+TP3 lists their surgeries
+y
+2094024829
+test_user_3
+test_user_3_password
+
+p
+test_user_1
+test_user_1_password
+2
+3
+1
+2021-07-08
+2021-07-08
+3:00pm
+4
+3
+4
+2021-07-08
+3:00pm
 5
 e
+
+#!
+
+rm -r patients logins medical_records identifiers admin_logins
+
 

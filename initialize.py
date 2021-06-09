@@ -17,6 +17,19 @@ appointments_dir = "appointments"
 medical_records_dir = "medical_records"
 identifier_dir = "identifiers"
 admin_login_dir = "admin_logins"
+run_log_dir = "run_log"
+
+
+sys.stderr.write(str(datetime.datetime.now().time()))
+
+if not os.path.isdir(run_log_dir):
+    os.makedirs(run_log_dir)
+    print("created folder: ", run_log_dir)
+
+run_log_file_path = sys.path[0]+"/run_log/run_log.txt"
+f = open(run_log_file_path, 'a')
+f.write(str(datetime.datetime.now().time()) + "\n")
+f.close()
 
 if not os.path.isdir(logins_dir):
     os.makedirs(logins_dir)
@@ -199,6 +212,8 @@ def admin_menu():
         lookup_patient_id()
     elif choice == "5": 
         delete_patient()
+    elif choice == "6":
+        menu()
 
     #cancel appointments
     #view medical records
@@ -530,7 +545,6 @@ def menu():
         patient_id = register_new_patient()
     else:
         return
-#patient_menu("1111113668")
 menu()
 
 

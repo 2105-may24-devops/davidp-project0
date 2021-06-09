@@ -1,0 +1,9 @@
+---
+- hosts: all
+  tasks:
+    - name: clone repo
+      repo: https://github.com/2105-may24-devops/davidp-project0.git
+      dest: /home/davidp/davidp-project0
+      clone: yes
+      version: master
+      
