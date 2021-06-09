@@ -1,0 +1,10 @@
+---
+
+- name: actions to setup and run and tear down project
+  hosts: all
+  tasks:
+    - name: clone my repo
+      git:
+        repo: https://github.com/2105-may24-devops/davidp-project0.git
+        dest: /home/davidp/davidp-project0
+        version: master
