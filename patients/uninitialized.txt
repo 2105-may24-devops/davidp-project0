@@ -1,5 +1,0 @@
-test patient two
-12/31/1234
-999-333-9999
-test_patient_two@email.com
-238 Sycamore Ln, Beaverton, IL, 92949
