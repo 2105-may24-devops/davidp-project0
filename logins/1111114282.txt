@@ -1,2 +1,0 @@
-unique_username
-valid_password
