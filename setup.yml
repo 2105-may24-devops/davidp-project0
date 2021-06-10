@@ -25,3 +25,7 @@
         name: virtualenv
         executable: "pip3"
         state: latest
+    - name: setup venv
+      pip:
+        virtualenv: /home/davidp/davidp-project0/venv
+        requirements: /home/davidp/davidp-project0/requirements.txt
