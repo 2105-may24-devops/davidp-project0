@@ -1,13 +1,4 @@
 # Starter pipeline
-- task: Ansible@0
-  inputs:
-    ansibleInterface: 'agentMachine'
-    playbookPathOnAgentMachine: './setup.yml'
-    inventoriesAgentMachine: 'file'
-    inventoryFileOnAgentMachine: './inventory'
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
 
 trigger:
 - main
@@ -23,3 +14,13 @@ steps:
     echo Add other tasks to build, test, and deploy your project.
     echo See https://aka.ms/yaml
   displayName: 'Run a multi-line script'
+
+- task: Ansible@0
+  inputs:
+    ansibleInterface: 'agentMachine'
+    playbookPathOnAgentMachine: './setup.yml'
+    inventoriesAgentMachine: 'file'
+    inventoryFileOnAgentMachine: './inventory'
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
