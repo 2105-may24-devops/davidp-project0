@@ -42,8 +42,6 @@ steps:
     scannerMode: 'MSBuild'
     projectKey: 'dajpearl_davidp-project0-azure_devops'
 
-- task: SonarCloudAnalyze@1
-
 - task: Ansible@0
   inputs:
     ansibleInterface: 'agentMachine'
@@ -53,3 +51,5 @@ steps:
 # Start with a minimal pipeline that you can customize to build and deploy your code.
 # Add steps that build, run tests, deploy, and more:
 # https://aka.ms/yaml
+
+- task: SonarCloudAnalyze@1
