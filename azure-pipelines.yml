@@ -42,6 +42,8 @@ steps:
     scannerMode: 'MSBuild'
     projectKey: 'dajpearl_davidp-project0-azure_devops'
 
+- task: SonarCloudAnalyze@1
+
 - task: Ansible@0
   inputs:
     ansibleInterface: 'agentMachine'
