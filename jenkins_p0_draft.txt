@@ -1,0 +1,23 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Building..'
+                git 'https://github.com/2105-may24-devops/davidp-project0'
+                ansiblePlaybook credentialsId: 'davidp-jenkins-agent', inventory: './inventory', playbook: ''
+            }
+        }
+        stage('Test') {
+            steps {
+                echo 'Testing..'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                echo 'Deploying....'
+            }
+        }
+    }
+}
