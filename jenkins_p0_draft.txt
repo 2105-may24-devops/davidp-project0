@@ -5,8 +5,7 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Building..'
-                git 'https://github.com/2105-may24-devops/davidp-project0'
-                ansiblePlaybook credentialsId: 'davidp-jenkins-agent', inventory: './inventory', playbook: ''
+                ansiblePlaybook credentialsId: 'davidp-jenkins-agent', inventory: './inventory', playbook: './setup.yml'
             }
         }
         stage('Test') {
