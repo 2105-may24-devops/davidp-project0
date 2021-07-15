@@ -41,6 +41,10 @@ steps:
     organization: 'dajpearl'
     scannerMode: 'MSBuild'
     projectKey: 'dajpearl_davidp-project0-azure_devops'
+- task: WhiteSource@21
+  inputs:
+    cwd: '$(System.DefaultWorkingDirectory)'
+    projectName: '2105-may24-devops.davidp-project0'
 
 - task: Ansible@0
   inputs:
